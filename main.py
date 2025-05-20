@@ -10,7 +10,6 @@ st.title("Chlorine Decay Coefficient Calculator")
 initial_chlorine = 2.0
 final_chlorine = 0.96
 pipe_material_factor = 0.8
-
 # Utility functions
 def contact_time(length_m, velocity):
     return length_m / velocity / 3600 if velocity > 0 else None
