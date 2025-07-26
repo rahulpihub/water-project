@@ -90,8 +90,8 @@ Chlorine-Decay-Calculator/
 ### **1. Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/Chlorine-Decay-Calculator.git
-cd Chlorine-Decay-Calculator
+git clone https://github.com/rahulpihub/water_project.git
+cd water_project
 ```
 
 ### **2. Create and activate a virtual environment** (optional but recommended)
@@ -138,12 +138,4 @@ For **Upload Dataset** mode, your CSV must include:
 
 ---
 
-## **Future Improvements**
 
-* Add visualizations (graphs of decay trends).
-* Support for multiple pipe materials and corresponding factors.
-* API endpoint for batch processing.
-
----
-
-### **Would you like me to create a `requirements.txt` for this project right now?**
