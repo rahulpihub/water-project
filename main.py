@@ -137,14 +137,12 @@ def apply_correction_factors(k_w_base, ph, iron, nitrite, manganese, h2s):
 
 # Sidebar mode selection
 st.sidebar.title("Mode")
-input_mode = st.sidebar.radio("Choose input mode", ["Upload Dataset", "Manual Input"])
-
+input_mode = st.sidebar.selectbox("Choose input mode", ["Upload Dataset", "Manual Input"])
 # ------------------------------
 # Mode 1: Upload Dataset
 # ------------------------------
 if input_mode == "Upload Dataset":
-    decay_mode = st.sidebar.radio("Select Decay Type", ["Wall Decay", "Bulk Decay"])
-
+    decay_mode = st.sidebar.selectbox("Select Decay Type", ["Wall Decay", "Bulk Decay"])
     # Reservoir Selection (button logic)
     st.sidebar.markdown("### Reservoir Selection")
     selected_region = None
@@ -222,7 +220,7 @@ if input_mode == "Upload Dataset":
 # ------------------------------
 elif input_mode == "Manual Input":
     st.sidebar.markdown("### Enter General Parameters")
-    decay_choice = st.sidebar.radio("Choose Decay Type", ["Wall Decay", "Bulk Decay"])
+    decay_mode = st.sidebar.selectbox("Select Decay Type", ["Wall Decay", "Bulk Decay"])
 
     # Reservoir Selection (button logic same as Upload Dataset)
     st.sidebar.markdown("### Reservoir Selection")
