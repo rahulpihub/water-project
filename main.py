@@ -4,6 +4,16 @@ import numpy as np
 import math
 
 st.set_page_config(page_title="Wall & Bulk Decay Calculator", layout="wide")
+# Apply secondary background color
+st.markdown("""
+    <style>
+        /* Secondary background color (Streamlit standard variable) */
+        [data-testid="stSidebar"], .stSidebar, .css-1d391kg {
+            background-color: #2DA5BB !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 st.title("Chlorine Decay Coefficient Calculator")
 
 # Constants
