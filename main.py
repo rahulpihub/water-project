@@ -160,9 +160,6 @@ if input_mode == "Upload Dataset":
         for reservoir in reservoirs_by_region[selected_region]:
             st.write(f"- {reservoir}")
 
-
-
-
     uploaded_file = st.file_uploader("Upload your dataset as CSV", type=["csv"])
 
     if uploaded_file:
@@ -242,11 +239,17 @@ elif input_mode == "Manual Input":
 
     st.markdown("## ✍️ Manual Entry Mode")
     # Reservoir Selection for Manual Mode
-    st.markdown("### Reservoir Selection")
-    region = st.selectbox("Select Region / District", list(reservoirs_by_region.keys()))
-    selected_reservoir = st.selectbox("Select Reservoir", reservoirs_by_region[region])
-    st.write(f"**Selected Reservoir:** {selected_reservoir}")
+    st.sidebar.markdown("### Reservoir Selection")
 
+    selected_region_manual = None
+    for region in reservoirs_by_region.keys():
+        if st.sidebar.button(region):
+            selected_region_manual = region
+
+    if selected_region_manual:
+        st.subheader(f"Reservoirs in {selected_region_manual}")
+        for reservoir in reservoirs_by_region[selected_region_manual]:
+            st.write(f"- {reservoir}")
 
     st.markdown("Use the fields below to input values manually for decay calculation.")
     
