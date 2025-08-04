@@ -265,7 +265,7 @@ elif input_mode == "Manual Input":
         key="decay_mode_manual"
     )
 
-    # Reservoir Selection (button logic same as Upload Dataset)
+    # Reservoir Selection (button logic same as Upload D    ataset)
     st.sidebar.markdown("### Reservoir Selection")
     selected_region_manual = st.session_state.selected_region_manual
     for region in reservoirs_by_region.keys():
