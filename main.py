@@ -147,10 +147,19 @@ if input_mode == "Upload Dataset":
     decay_mode = st.sidebar.radio("Select Decay Type", ["Wall Decay", "Bulk Decay"])
     # Reservoir Selection for Upload Mode
     st.sidebar.markdown("### Reservoir Selection")
-    district_filter = st.sidebar.selectbox("Select Region / District", list(reservoirs_by_region.keys()))
-    st.sidebar.markdown("### Reservoirs in Selected Region")
-    for reservoir in reservoirs_by_region[district_filter]:
-        st.sidebar.write(f"- {reservoir}")
+
+    # Create buttons for each region
+    selected_region = None
+    for region in reservoirs_by_region.keys():
+        if st.sidebar.button(region):
+            selected_region = region
+
+    # Display reservoirs in main page if a region is clicked
+    if selected_region:
+        st.subheader(f"Reservoirs in {selected_region}")
+        for reservoir in reservoirs_by_region[selected_region]:
+            st.write(f"- {reservoir}")
+
 
 
 
