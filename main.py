@@ -36,7 +36,7 @@ def apply_correction_factors(k_w_base, ph, iron, nitrite, manganese, h2s):
 
 # Sidebar mode selection
 st.sidebar.title("Mode")
-input_mode = st.sidebar.radio("Choose input mode", ["Upload Dataset", "Manual Input"])
+input_mode = st.sidebar.radio("Choose input mode", ["Upload Dataset", "Manual Input", "Reservoir Data"])
 
 # ------------------------------
 # ✅ Mode 1: Upload CSV Dataset
@@ -187,3 +187,50 @@ elif input_mode == "Manual Input":
                     st.write(f"**Adjusted k_b:** {adjusted_k_b:.6f} per hr")
                 except Exception as e:
                     st.error(f"Error in Bulk Decay: {e}")
+# ------------------------------
+# ✅ Mode 3: Reservoir Data (Sidebar Selection)
+# ------------------------------
+elif input_mode == "Reservoir Data":
+    st.sidebar.title("Reservoir Selection")
+
+    # Reservoir dataset
+    reservoir_data = [
+        {"Reservoir": "Poondi Dam (Poondi Reservoir)", "District": "Tiruvallur"},
+        {"Reservoir": "Thervoy Kandigai Dam", "District": "Tiruvallur"},
+        {"Reservoir": "Aliyar Reservoir", "District": "Coimbatore (Pollachi)"},
+        {"Reservoir": "Amaravathi Dam & Reservoir", "District": "Tiruppur"},
+        {"Reservoir": "Sholayar Dam (Upper Sholayar)", "District": "Coimbatore"},
+        {"Reservoir": "Lower Nirar Dam", "District": "Coimbatore"},
+        {"Reservoir": "Mettur Dam (Stanley Reservoir)", "District": "Salem"},
+        {"Reservoir": "Bhavanisagar Dam (Lower Bhavani)", "District": "Erode"},
+        {"Reservoir": "Varattupallam Dam", "District": "Erode"},
+        {"Reservoir": "Kunderipallam Dam", "District": "Erode"},
+        {"Reservoir": "Chinnar (Panchapalli) Dam", "District": "Dharmapuri"},
+        {"Reservoir": "Nagavathi Dam", "District": "Dharmapuri"},
+        {"Reservoir": "Krishnagiri Dam", "District": "Krishnagiri"},
+        {"Reservoir": "Kodaganar Dam", "District": "Dindigul"},
+        {"Reservoir": "Vaigai Dam (Vaigai Reservoir)", "District": "Theni"},
+        {"Reservoir": "Papanasam Dam", "District": "Tirunelveli"},
+        {"Reservoir": "Manimukthanadhi Dam", "District": "Viluppuram"},
+        {"Reservoir": "Mordhana Dam (Koundanyanadhi)", "District": "Vellore"},
+        {"Reservoir": "Pechiparai Dam", "District": "Kanyakumari"},
+        {"Reservoir": "Avalanche Dam", "District": "Nilgiris"}
+    ]
+    df_reservoirs = pd.DataFrame(reservoir_data)
+
+    # Sidebar Filters
+    district_filter = st.sidebar.selectbox("Select District", ["All"] + sorted(df_reservoirs["District"].unique()))
+    
+    if district_filter == "All":
+        filtered = df_reservoirs
+    else:
+        filtered = df_reservoirs[df_reservoirs["District"] == district_filter]
+
+    # Sidebar Reservoir Selection
+    selected_reservoir = st.sidebar.selectbox("Select Reservoir", filtered["Reservoir"].tolist())
+
+    # Show Selection in Main Page
+    st.subheader("Selected Reservoir")
+    st.write(f"**District:** {district_filter if district_filter != 'All' else 'Multiple'}")
+    st.write(f"**Reservoir:** {selected_reservoir}")
+
