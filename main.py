@@ -137,17 +137,41 @@ def apply_correction_factors(k_w_base, ph, iron, nitrite, manganese, h2s):
 
 # Sidebar mode selection
 st.sidebar.title("Mode")
+# State for disabling selectboxes
+if 'selected_region' not in st.session_state:
+    st.session_state.selected_region = None
+if 'selected_region_manual' not in st.session_state:
+    st.session_state.selected_region_manual = None
+
+# Determine if any region is selected (for either mode)
+
+# For UI-only disabling, set a flag for visual style
+ui_disable_selectboxes = st.session_state.selected_region is not None or st.session_state.selected_region_manual is not None
+
+
+# Add CSS to visually disable selectboxes if needed
+if ui_disable_selectboxes:
+    st.markdown(
+        '''<style>
+        /* Greys out all sidebar selectboxes visually, but keeps them enabled */
+        section[data-testid="stSidebar"] .stSelectbox > div[data-baseweb] {
+            opacity: 0.5 !important;
+        }
+        </style>''', unsafe_allow_html=True)
+
 input_mode = st.sidebar.selectbox("Choose input mode", ["Upload Dataset", "Manual Input"])
 # ------------------------------
 # Mode 1: Upload Dataset
 # ------------------------------
 if input_mode == "Upload Dataset":
+
     decay_mode = st.sidebar.selectbox("Select Decay Type", ["Wall Decay", "Bulk Decay"])
     # Reservoir Selection (button logic)
     st.sidebar.markdown("### Reservoir Selection")
-    selected_region = None
+    selected_region = st.session_state.selected_region
     for region in reservoirs_by_region.keys():
-        if st.sidebar.button(region):
+        if st.sidebar.button(region, key=f"upload_{region}"):
+            st.session_state.selected_region = region
             selected_region = region
 
     # Show reservoirs on main page
@@ -219,14 +243,16 @@ if input_mode == "Upload Dataset":
 # Mode 2: Manual Input
 # ------------------------------
 elif input_mode == "Manual Input":
+
     st.sidebar.markdown("### Enter General Parameters")
     decay_mode = st.sidebar.selectbox("Select Decay Type", ["Wall Decay", "Bulk Decay"])
 
     # Reservoir Selection (button logic same as Upload Dataset)
     st.sidebar.markdown("### Reservoir Selection")
-    selected_region_manual = None
+    selected_region_manual = st.session_state.selected_region_manual
     for region in reservoirs_by_region.keys():
-        if st.sidebar.button(region):
+        if st.sidebar.button(region, key=f"manual_{region}"):
+            st.session_state.selected_region_manual = region
             selected_region_manual = region
 
     # Show reservoirs on main page
