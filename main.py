@@ -22,29 +22,95 @@ final_chlorine = 0.96
 pipe_material_factor = 0.8
 
 # Reservoir dataset
-reservoir_data = [
-    {"Reservoir": "Poondi Dam (Poondi Reservoir)", "District": "Tiruvallur"},
-    {"Reservoir": "Thervoy Kandigai Dam", "District": "Tiruvallur"},
-    {"Reservoir": "Aliyar Reservoir", "District": "Coimbatore (Pollachi)"},
-    {"Reservoir": "Amaravathi Dam & Reservoir", "District": "Tiruppur"},
-    {"Reservoir": "Sholayar Dam (Upper Sholayar)", "District": "Coimbatore"},
-    {"Reservoir": "Lower Nirar Dam", "District": "Coimbatore"},
-    {"Reservoir": "Mettur Dam (Stanley Reservoir)", "District": "Salem"},
-    {"Reservoir": "Bhavanisagar Dam (Lower Bhavani)", "District": "Erode"},
-    {"Reservoir": "Varattupallam Dam", "District": "Erode"},
-    {"Reservoir": "Kunderipallam Dam", "District": "Erode"},
-    {"Reservoir": "Chinnar (Panchapalli) Dam", "District": "Dharmapuri"},
-    {"Reservoir": "Nagavathi Dam", "District": "Dharmapuri"},
-    {"Reservoir": "Krishnagiri Dam", "District": "Krishnagiri"},
-    {"Reservoir": "Kodaganar Dam", "District": "Dindigul"},
-    {"Reservoir": "Vaigai Dam (Vaigai Reservoir)", "District": "Theni"},
-    {"Reservoir": "Papanasam Dam", "District": "Tirunelveli"},
-    {"Reservoir": "Manimukthanadhi Dam", "District": "Viluppuram"},
-    {"Reservoir": "Mordhana Dam (Koundanyanadhi)", "District": "Vellore"},
-    {"Reservoir": "Pechiparai Dam", "District": "Kanyakumari"},
-    {"Reservoir": "Avalanche Dam", "District": "Nilgiris"}
-]
-df_reservoirs = pd.DataFrame(reservoir_data)
+reservoirs_by_region = {
+    "Chennai / Tiruvallur": [
+        "Poondi Dam (Poondi Reservoir) – Tiruvallur District",
+        "Thervoy Kandigai Dam – Tiruvallur District"
+    ],
+    "Coimbatore / Pollachi": [
+        "Aliyar Reservoir – Coimbatore (Pollachi) District",
+        "Amaravathi Dam & Reservoir – Tiruppur District (west of Coimbatore)",
+        "Sholayar Dam (Upper Sholayar) – Coimbatore District",
+        "Lower Nirar Dam – Coimbatore District"
+    ],
+    "Salem District": [
+        "Mettur Dam (Stanley Reservoir) – Salem District"
+    ],
+    "Erode District": [
+        "Bhavanisagar Dam (Lower Bhavani) – Erode District",
+        "Varattupallam Dam – Erode District",
+        "Kunderipallam Dam – Erode District"
+    ],
+    "Dharmapuri District": [
+        "Chinnar (Panchapalli) Dam – Dharmapuri District",
+        "Nagavathi Dam – Dharmapuri District",
+        "Kesarigulihalla Dam – Dharmapuri District",
+        "Maruthupandiyar/Dharmapuri related – including Thoppaiyar, Thumblahalli – Dharmapuri District"
+    ],
+    "Krishnagiri District": [
+        "Krishnagiri Dam – Krishnagiri District",
+        "Barur Dam – Krishnagiri District",
+        "Pambar Dam – Krishnagiri District",
+        "Shoolagiri Chinnar Dam – Krishnagiri District"
+    ],
+    "Dindigul District": [
+        "Kodaganar Dam – Dindigul District",
+        "Nanganjiyar Dam – Dindigul District",
+        "Varadhamanadhi Dam – Dindigul District",
+        "Marudhanadhi Dam – Dindigul District",
+        "Pallar Porundalar (Ponnaniar) Dam – Dindigul District"
+    ],
+    "Theni District": [
+        "Vaigai Dam (Vaigai Reservoir) – Theni District",
+        "Manjalar Dam – Theni District",
+        "Sothupparai Dam – Theni District",
+        "Periyar Forebay – Theni District",
+        "Eravangalar Dam – Theni District",
+        "Shanmuganadhi Dam – Theni District"
+    ],
+    "Tirunelveli District": [
+        "Papanasam Dam – Tirunelveli District",
+        "Chittar I & II Dams – Tirunelveli District",
+        "Gundar Dam – Tirunelveli District",
+        "Karuppanadhi Dam – Tirunelveli District",
+        "Nambiar Dam – Tirunelveli District",
+        "Servalar Dam – Tirunelveli District",
+        "Vadakku Paichaiyar Dam – Tirunelveli District"
+    ],
+    "Viluppuram District": [
+        "Manimukthanadhi Dam – Viluppuram District",
+        "Vidur Dam – Viluppuram District"
+    ],
+    "Vellore District": [
+        "Mordhana Dam (Koundanyanadhi) – Vellore District"
+    ],
+    "Tiruppur District": [
+        "Nallathangal Odai Dam – Tiruppur District",
+        "Uppar (Erode) Dam – Tiruppur District",
+        "Thirumurthi Dam – Tiruppur District"
+    ],
+    "Perambalur District": [
+        "Visvakudi Dam – Perambalur District",
+        "Kottarai Dam – Perambalur District"
+    ],
+    "Kanniyakumari District": [
+        "Pechiparai Dam – Kanyakumari District",
+        "Lower Kodayar Dam – Kanyakumari District",
+        "Perunchani Dam – Kanyakumari District",
+        "Puthen Dam – Kanyakumari District",
+        "Poigaiyar Dam – Kanyakumari District",
+        "Kuttiyar Dam – Kanyakumari District"
+    ],
+    "Nilgiris District": [
+        "Avalanche Dam – Nilgiris District",
+        "Emerald Dam – Nilgiris District",
+        "Glenmorgan – Nilgiris District",
+        "Moyar Forebay – Nilgiris District",
+        "Pykara Dam – Nilgiris District",
+        "Upper Bhavani Dam – Nilgiris District"
+    ]
+}
+
 
 # Utility functions
 def contact_time(length_m, velocity):
@@ -81,13 +147,12 @@ if input_mode == "Upload Dataset":
     decay_mode = st.sidebar.radio("Select Decay Type", ["Wall Decay", "Bulk Decay"])
     # Reservoir Selection for Upload Mode
     st.sidebar.markdown("### Reservoir Selection")
-    district_filter = st.sidebar.selectbox("Select District", ["All"] + sorted(df_reservoirs["District"].unique()))
-    if district_filter == "All":
-        filtered_reservoirs = df_reservoirs
-    else:
-        filtered_reservoirs = df_reservoirs[df_reservoirs["District"] == district_filter]
+    district_filter = st.sidebar.selectbox("Select Region / District", list(reservoirs_by_region.keys()))
+    st.sidebar.markdown("### Reservoirs in Selected Region")
+    for reservoir in reservoirs_by_region[district_filter]:
+        st.sidebar.write(f"- {reservoir}")
 
-    selected_reservoir = st.sidebar.selectbox("Select Reservoir", filtered_reservoirs["Reservoir"].tolist())
+
 
     uploaded_file = st.file_uploader("Upload your dataset as CSV", type=["csv"])
 
@@ -169,14 +234,10 @@ elif input_mode == "Manual Input":
     st.markdown("## ✍️ Manual Entry Mode")
     # Reservoir Selection for Manual Mode
     st.markdown("### Reservoir Selection")
-    district_filter = st.selectbox("Select District", ["All"] + sorted(df_reservoirs["District"].unique()))
-    if district_filter == "All":
-        filtered_reservoirs = df_reservoirs
-    else:
-        filtered_reservoirs = df_reservoirs[df_reservoirs["District"] == district_filter]
-
-    selected_reservoir = st.selectbox("Select Reservoir", filtered_reservoirs["Reservoir"].tolist())
+    region = st.selectbox("Select Region / District", list(reservoirs_by_region.keys()))
+    selected_reservoir = st.selectbox("Select Reservoir", reservoirs_by_region[region])
     st.write(f"**Selected Reservoir:** {selected_reservoir}")
+
 
     st.markdown("Use the fields below to input values manually for decay calculation.")
     
