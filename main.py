@@ -3,6 +3,13 @@ import pandas as pd
 import numpy as np
 import math
 
+# Function to reset session state only (no rerun needed)
+def reset_state():
+    if 'selected_region' in st.session_state:
+        st.session_state.selected_region = None
+    if 'selected_region_manual' in st.session_state:
+        st.session_state.selected_region_manual = None
+
 st.set_page_config(page_title="Wall & Bulk Decay Calculator", layout="wide")
 
 # Apply secondary background color
@@ -144,10 +151,7 @@ if 'selected_region_manual' not in st.session_state:
     st.session_state.selected_region_manual = None
 
 # Determine if any region is selected (for either mode)
-
-# For UI-only disabling, set a flag for visual style
 ui_disable_selectboxes = st.session_state.selected_region is not None or st.session_state.selected_region_manual is not None
-
 
 # Add CSS to visually disable selectboxes if needed
 if ui_disable_selectboxes:
@@ -159,13 +163,23 @@ if ui_disable_selectboxes:
         }
         </style>''', unsafe_allow_html=True)
 
-input_mode = st.sidebar.selectbox("Choose input mode", ["Upload Dataset", "Manual Input"])
+input_mode = st.sidebar.selectbox(
+    "Choose input mode",
+    ["Upload Dataset", "Manual Input"],
+    on_change=reset_state,
+    key="input_mode_select"
+)
+
 # ------------------------------
 # Mode 1: Upload Dataset
 # ------------------------------
 if input_mode == "Upload Dataset":
-
-    decay_mode = st.sidebar.selectbox("Select Decay Type", ["Wall Decay", "Bulk Decay"])
+    decay_mode = st.sidebar.selectbox(
+        "Select Decay Type",
+        ["Wall Decay", "Bulk Decay"],
+        on_change=reset_state,
+        key="decay_mode_upload"
+    )
     # Reservoir Selection (button logic)
     st.sidebar.markdown("### Reservoir Selection")
     selected_region = st.session_state.selected_region
@@ -243,9 +257,13 @@ if input_mode == "Upload Dataset":
 # Mode 2: Manual Input
 # ------------------------------
 elif input_mode == "Manual Input":
-
     st.sidebar.markdown("### Enter General Parameters")
-    decay_mode = st.sidebar.selectbox("Select Decay Type", ["Wall Decay", "Bulk Decay"])
+    decay_mode = st.sidebar.selectbox(
+        "Select Decay Type",
+        ["Wall Decay", "Bulk Decay"],
+        on_change=reset_state,
+        key="decay_mode_manual"
+    )
 
     # Reservoir Selection (button logic same as Upload Dataset)
     st.sidebar.markdown("### Reservoir Selection")
@@ -313,7 +331,7 @@ elif input_mode == "Manual Input":
             h2s = st.number_input("Hydrogen Sulfide", min_value=0.0)
 
         st.markdown("### Run Calculation")
-        if decay_choice == "Wall Decay":
+        if decay_mode == "Wall Decay":
             if st.button("🔍 Calculate Wall Decay"):
                 try:
                     diameter_m = diameter / 1000
@@ -328,7 +346,7 @@ elif input_mode == "Manual Input":
                 except Exception as e:
                     st.error(f"Error in Wall Decay: {e}")
 
-        elif decay_choice == "Bulk Decay":
+        elif decay_mode == "Bulk Decay":
             if st.button("🔍 Calculate Bulk Decay"):
                 try:
                     t = contact_time(length, velocity)
