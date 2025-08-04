@@ -133,6 +133,12 @@ elif input_mode == "Manual Input":
         with c2:
             diameter = st.number_input("Pipe Diameter (mm)", min_value=1.0, step=1.0)
 
+        c11, c12 = st.columns(2)
+        with c11:
+            pipe_material = st.selectbox("Type of Pipe Material", ["AC", "PVC", "HDPE", "CI"])
+        with c12:
+            pipe_age = st.number_input("Age of Pipe (years)", min_value=1, step=1)
+
         c3, c4 = st.columns(2)
         with c3:
             velocity = st.number_input("Velocity (m/s)", min_value=0.01, step=0.01)
@@ -146,6 +152,19 @@ elif input_mode == "Manual Input":
             ph = st.number_input("pH", min_value=0.0, value=7.0)
         with c6:
             iron = st.number_input("Iron", min_value=0.0)
+
+        # Temperature selection with dropdown
+        temp_unit = st.selectbox("Select Temperature Unit", ["Celsius", "Fahrenheit"])
+        if temp_unit == "Celsius":
+            temperature = st.number_input("Temperature (°C)", min_value=-50.0, value=25.0)
+        else:
+            temperature = st.number_input("Temperature (°F)", min_value=-58.0, value=77.0)
+
+        # (Optional) Convert to Celsius for calculations
+        if temp_unit == "Fahrenheit":
+            temperature_celsius = (temperature - 32) * 5.0 / 9.0
+        else:
+            temperature_celsius = temperature
 
         c7, c8 = st.columns(2)
         with c7:
