@@ -337,3 +337,4 @@ elif input_mode == "Manual Input":
                     st.write(f"**Adjusted k_b:** {adjusted_k_b:.6f} per hr")
                 except Exception as e:
                     st.error(f"Error in Bulk Decay: {e}")
+
